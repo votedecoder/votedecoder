@@ -1,0 +1,53 @@
+<html>
+<head>
+    <title>Vote Decoder</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+	<script src="html5-qrcode.min.js"></script>
+	<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <div id="qr-reader">Click here to Scan QR Code to verify your LA County Ballot is correct.</div>
+    <div id="qr-reader-results"></div>
+	<div id="footer">Please Note: This site does not collect any data. QR codes are processed directly in your browser and never sent anywhere. <a href="https://github.com/votedecoder/votedecoder">You can view the source code on GitHub</a>.</div>
+<script>
+	var codeList;
+
+	function matchVotes(voteCodes) {
+		voteCodes.forEach(function(code, index) {
+			$('#qr-reader-results').append('<div><h3>'+codeList[code].contest+'</h3>'+codeList[code].name+'</div>');
+		})
+	}
+
+	$(document).ready(function() {
+		$.getJSON( "data/2020/lacounty.json").done(function( data ) {
+			codeList = data;
+		}).fail(function( jqxhr, textStatus, error ) {
+			    var err = textStatus + ", " + error;
+			    console.log( "Request Failed: " + err );
+		});
+		
+		$('#qr-reader').click(function() {
+			const html5QrCode = new Html5Qrcode("qr-reader");
+			const config = { fps: 10, qrbox: 250 };
+
+			html5QrCode.start({ facingMode: "environment" }, config, function(qrCodeMessage) {
+				html5QrCode.stop().then(ignore => {
+					$('#qr-reader').hide();
+				  	// QR Code scanning is stopped.
+					voteCodesStr = qrCodeMessage.match(/SEL:(.*)\.BMD:/)
+					voteCodesArray = voteCodesStr[1].split('/');
+					
+					matchVotes(voteCodesArray);
+				}).catch(err => {
+					// Stop failed, handle it.
+					$('#qr-reader-results').html(err);
+				});
+			});
+		});
+		
+	});
+
+</script>
+</body>
+</html>
