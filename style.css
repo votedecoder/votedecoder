@@ -1,0 +1,27 @@
+body {
+	font-family: sans-serif;
+	padding: 10px;
+	background-color: #000000;
+	color: #ffffff;
+}
+
+h3 {
+	margin: 0;
+	padding: 0px;
+	padding-bottom: 2px;
+}
+
+#qr-reader-results div {
+	text-align: center;
+	background-color: #1f1e1e;
+	margin-bottom: 8px;
+	padding-top: 4px;
+	padding-bottom: 4px;
+}
+
+#qr-reader {
+	background-color: #1f1e1e;
+	padding-top: 32px;
+	padding-bottom: 32px;
+	font-size: 1.3em;
+}
